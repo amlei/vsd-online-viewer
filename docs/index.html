@@ -23,6 +23,14 @@
     <header class="hero">
       <p class="eyebrow">Self-hosted · Node.js · libvisio</p>
       <h1>VSD Online Viewer</h1>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/license-MIT-3DA639.svg" alt="license MIT" />
+        <img src="https://img.shields.io/badge/node-%E2%89%A5%2020-339933.svg?logo=node.js&logoColor=white" alt="node >= 20" />
+        <img src="https://img.shields.io/badge/format-VSD%20%E2%86%92%20SVG-1f5ac2.svg" alt="format VSD to SVG" />
+        <img src="https://img.shields.io/badge/renderer-libvisio%20%2B%20custom%20SVG-6f42c1.svg" alt="renderer libvisio + custom SVG" />
+        <img src="https://img.shields.io/badge/server%20deps-none-0aa.svg" alt="server dependencies none" />
+        <img src="https://img.shields.io/badge/deploy-self--hosted%20%C2%B7%20offline-16a34a.svg" alt="self-hosted offline" />
+      </p>
       <p class="lead">
         自托管的 Microsoft Visio 图纸（<code>.vsd</code>）在线查看器。上传一份图纸，服务端用 libvisio
         解析、再用自研 SVG 渲染器逐页渲染，浏览器里翻页、缩放、下载——<strong>不需要 Visio，不需要
@@ -91,7 +99,8 @@ npm start                # http://localhost:4310</code></pre>
 
     <footer>
       <p>
-        渲染器 fork 自 <a href="https://wiki.documentfoundation.org/DLP/Libraries/libvisio">libvisio</a>（MPL-2.0）。
+        本项目代码 MIT 许可；渲染器 fork 自
+        <a href="https://wiki.documentfoundation.org/DLP/Libraries/libvisio">libvisio</a>（MPL-2.0）。
         <a href="https://github.com/amlei/vsd-online-viewer">GitHub</a> ·
         <a href="https://github.com/amlei/vsd-online-viewer/blob/main/README.md">README</a>
       </p>

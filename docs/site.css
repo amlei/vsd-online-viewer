@@ -31,6 +31,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0
   color: var(--muted);
 }
 .hero h1 { margin: 0 0 16px; font-size: 40px; letter-spacing: -0.01em; }
+.badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.badges img { height: 20px; display: block; }
 .lead { margin: 0 0 24px; font-size: 17px; color: #35414d; }
 .actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 0; }
 

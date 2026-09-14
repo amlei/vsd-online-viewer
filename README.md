@@ -1,5 +1,13 @@
 # VSD Online Viewer
 
+[![license](https://img.shields.io/badge/license-MIT-3DA639.svg)](LICENSE)
+[![node](https://img.shields.io/badge/node-%E2%89%A5%2020-339933.svg?logo=node.js&logoColor=white)](#环境要求)
+[![format](https://img.shields.io/badge/format-VSD%20%E2%86%92%20SVG-1f5ac2.svg)](#关键特性)
+[![renderer](https://img.shields.io/badge/renderer-libvisio%20%2B%20custom%20SVG-6f42c1.svg)](https://github.com/amlei/vsd-online-viewer/blob/main/renderer/README.md)
+[![server deps](https://img.shields.io/badge/server%20deps-none-0aa.svg)](#关键特性)
+[![deploy](https://img.shields.io/badge/deploy-self--hosted%20%C2%B7%20offline-16a34a.svg)](https://github.com/amlei/vsd-online-viewer#快速开始)
+[![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux-555.svg)](#环境要求)
+
 **自托管的 Microsoft Visio 图纸（`.vsd`）在线查看器。** 上传一份 `.vsd`，服务端用
 [libvisio](https://wiki.documentfoundation.org/DLP/Libraries/libvisio) 解析，再由本项目
 自研的 SVG 渲染器逐页渲染成自包含 SVG，浏览器里翻页、缩放、平移查看，并可下载任意页。
@@ -199,9 +207,11 @@ data/       运行期数据（每份图纸一个目录：source.vsd + pages/ + m
 
 ## 许可与致谢
 
+- 本项目代码：[MIT](LICENSE)。
 - 渲染器 fork 自 [libvisio](https://wiki.documentfoundation.org/DLP/Libraries/libvisio)（MPL-2.0），
-  补丁见 `renderer/patches/`；SVG 生成依赖 [librevenge](https://sourceforge.net/p/libwpd/wiki/librevenge/)（LGPL-2.1+/MPL-2.0，仅链接不修改）。
-- 本仓库自身的 LICENSE 尚未添加，发布前需确定许可。
+  补丁见 `renderer/patches/`；仅链接 [librevenge](https://sourceforge.net/p/libwpd/wiki/librevenge/)
+  （LGPL-2.1+/MPL-2.0），不修改其源码。
+- libvisio / librevenge 源码不随本仓库分发，由 `renderer/build.sh` 在构建时下载。
 
 ---
 
