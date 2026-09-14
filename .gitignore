@@ -1,0 +1,5 @@
+data/
+renderer/build/
+node_modules/
+.playwright-cli/
+.DS_Store

@@ -1,0 +1,34 @@
+--- a/src/lib/VSDContentCollector.cpp
++++ b/src/lib/VSDContentCollector.cpp
+@@ -2968,7 +2968,12 @@
+     return;
+   }
+ 
+-  styleProps.insert("svg:stroke-width", m_scale*style.width);
++  // Visio stores the LineWeight cell in paper space (inches of the printed
++  // page), not in drawing units, so it must NOT be scaled by the drawing
++  // scale (m_scale = |pageScale/drawingScale|). Coordinates are scaled,
++  // line weights are not. Scaling them made every hairlined drawing
++  // unreadable (e.g. m_scale == 0.1 turned 2.25pt frames into 0.225pt).
++  styleProps.insert("svg:stroke-width", style.width);
+   libvisio::Colour colour = style.colour;
+   const Colour *pColour = m_currentLayerList.getColour(m_currentLayerMem);
+   if (pColour)
+@@ -3003,7 +3008,7 @@
+     if ((style.startMarker == 9) || (style.startMarker == 10) || (style.startMarker == 11) || (style.startMarker == 20) || (style.startMarker == 21))
+       styleProps.insert("draw:marker-start-center", "true");
+     styleProps.insert("draw:marker-start-path", _linePropertiesMarkerPath(style.startMarker));
+-    double w =  m_scale*_linePropertiesMarkerScale(style.startMarker)*(0.1/(style.width*style.width+1)+2.54*style.width);
++    double w =  _linePropertiesMarkerScale(style.startMarker)*(0.1/(style.width*style.width+1)+2.54*style.width);
+     styleProps.insert("draw:marker-start-width", (std::max)(w, 0.05));
+   }
+   if (style.endMarker > 0)
+@@ -3012,7 +3017,7 @@
+     if ((style.endMarker == 9) || (style.endMarker == 10) || (style.endMarker == 11) || (style.endMarker == 20) || (style.endMarker == 21))
+       styleProps.insert("draw:marker-end-center", "true");
+     styleProps.insert("draw:marker-end-path", _linePropertiesMarkerPath(style.endMarker));
+-    double w =  m_scale*_linePropertiesMarkerScale(style.endMarker)*(0.1/(style.width*style.width+1)+2.54*style.width);
++    double w =  _linePropertiesMarkerScale(style.endMarker)*(0.1/(style.width*style.width+1)+2.54*style.width);
+     styleProps.insert("draw:marker-end-width", (std::max)(w, 0.05));
+   }
+ 

@@ -1,0 +1,17 @@
+{
+  "name": "vsd-online-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Upload, convert and view Microsoft Visio (.vsd) drawings in the browser",
+  "scripts": {
+    "build:renderer": "./renderer/build.sh",
+    "start": "node server/server.mjs",
+    "dev": "VSD_VIEWER_DEV=1 node --watch server/server.mjs",
+    "test": "node --test",
+    "census": "node server/cli-census.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

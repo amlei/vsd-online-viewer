@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VSD Online Viewer — 自托管 Visio (.vsd) 在线查看器</title>
+    <meta
+      name="description"
+      content="VSD Online Viewer：自托管的 Microsoft Visio (.vsd) 图纸在线查看器。libvisio 解析 + 自研 SVG 渲染器逐页渲染，浏览器翻页/缩放/下载，无需 Visio 与 Windows。"
+    />
+    <meta name="keywords" content="Visio viewer, VSD viewer, .vsd 在线预览, Visio 图纸浏览器, libvisio, SVG renderer, self-hosted" />
+    <meta property="og:title" content="VSD Online Viewer" />
+    <meta property="og:description" content="自托管的 Visio (.vsd) 在线查看器：libvisio + 自研 SVG 渲染器，无需 Visio 与 Windows。" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/amlei/vsd-online-viewer/main/assets/preview-empty.png"
+    />
+    <link rel="stylesheet" href="./site.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='24'>📐</text></svg>" />
+  </head>
+  <body>
+    <header class="hero">
+      <p class="eyebrow">Self-hosted · Node.js · libvisio</p>
+      <h1>VSD Online Viewer</h1>
+      <p class="lead">
+        自托管的 Microsoft Visio 图纸（<code>.vsd</code>）在线查看器。上传一份图纸，服务端用 libvisio
+        解析、再用自研 SVG 渲染器逐页渲染，浏览器里翻页、缩放、下载——<strong>不需要 Visio，不需要
+        Windows，也不经过任何第三方转换服务</strong>。
+      </p>
+      <p class="actions">
+        <a class="button primary" href="https://github.com/amlei/vsd-online-viewer">GitHub 仓库</a>
+        <a class="button" href="https://github.com/amlei/vsd-online-viewer#快速开始">快速开始</a>
+      </p>
+    </header>
+
+    <main>
+      <figure>
+        <img
+          src="https://raw.githubusercontent.com/amlei/vsd-online-viewer/main/assets/preview-empty.png"
+          alt="VSD Online Viewer 界面：左侧图纸库，主区画布"
+        />
+        <figcaption>界面：左侧图纸库 + 主区画布（翻页 / 缩放 / 平移 / 下载 SVG）。</figcaption>
+      </figure>
+
+      <section>
+        <h2>为什么不用通用转换器</h2>
+        <p>
+          通用 SVG 转换（librevenge 的 SVG 后端等）在工程图纸上会系统性丢内容：Visio 的 hairline（0
+          线宽）被写成 <code>stroke-width:0</code>，而 SVG 里 0 宽等于"不画"——整张图的细线、里程标尺、
+          符号会消失；文本的 <code>fo:text-align</code>、段落硬换行被丢弃，图签文字错位重叠。
+        </p>
+        <p>
+          本项目把渲染器换成自己的实现，逐条修掉这些问题（线宽按纸张单位、hairline 用 1px
+          non-scaling stroke、文本自排版输出逐行 <code>&lt;tspan x y&gt;</code>、真实箭头路径、图案填充）。
+        </p>
+      </section>
+
+      <section>
+        <h2>关键特性</h2>
+        <ul>
+          <li><strong>逐页自包含 SVG</strong>：无外部字体/图片依赖，可直接下载、打印、嵌入其他系统</li>
+          <li><strong>hairline 正确渲染</strong>：0 线宽按 1 设备像素绘制，不再整片丢失</li>
+          <li><strong>文本按 Visio 排版</strong>：段落硬换行、水平/垂直对齐、CJK 自动折行</li>
+          <li><strong>真实箭头与图案填充</strong>：使用 Visio 原始箭头路径，斜线填充输出为 SVG <code>&lt;pattern&gt;</code></li>
+          <li><strong>零运行时依赖的服务端</strong>：只用 Node 内置模块；纯前端，无构建步骤</li>
+          <li><strong>图纸库与去重</strong>：相同内容（sha256）自动复用</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>快速开始</h2>
+        <pre><code>git clone https://github.com/amlei/vsd-online-viewer.git
+cd vsd-online-viewer
+npm run build:renderer   # 构建渲染器（下载 libvisio 并打补丁）
+npm start                # http://localhost:4310</code></pre>
+        <p class="muted">
+          环境要求：Node ≥ 20；构建渲染器需要 librevenge / boost / icu4c / libxml2 与 C++17 编译器。
+        </p>
+      </section>
+
+      <section>
+        <h2>适用场景</h2>
+        <ul>
+          <li>工程图纸（光缆/电缆径路图、站场图等）在内网集中查看</li>
+          <li>把 Visio 图纸批量转成可嵌入、可打印的 SVG</li>
+          <li>作为已有系统的渲染层：调用 CLI 或 HTTP API 取页面与文字坐标</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        渲染器 fork 自 <a href="https://wiki.documentfoundation.org/DLP/Libraries/libvisio">libvisio</a>（MPL-2.0）。
+        <a href="https://github.com/amlei/vsd-online-viewer">GitHub</a> ·
+        <a href="https://github.com/amlei/vsd-online-viewer/blob/main/README.md">README</a>
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VSD Online Viewer</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='24' font-size='24'>📐</text></svg>" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">📐</span>
+        <div>
+          <h1>VSD Online Viewer</h1>
+          <p>Visio 图纸在线查看</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span id="status" class="status" data-testid="status"></span>
+        <label class="button primary">
+          打开 VSD
+          <input id="file-input" type="file" accept=".vsd" hidden data-testid="file-input" />
+        </label>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel library">
+        <div class="panel-head">
+          <h2>图纸库</h2>
+          <span id="file-count" class="muted"></span>
+        </div>
+        <ul id="file-list" class="file-list" data-testid="file-list"></ul>
+        <div class="dropzone" id="dropzone" data-testid="dropzone">
+          拖拽 .vsd 到此处，或点击右上角「打开 VSD」
+        </div>
+      </aside>
+
+      <section class="viewer">
+        <div class="toolbar">
+          <div class="group">
+            <button id="prev-page" class="button" title="上一页 (←)">←</button>
+            <select id="page-select" class="select" data-testid="page-select"></select>
+            <button id="next-page" class="button" title="下一页 (→)">→</button>
+          </div>
+          <div class="group">
+            <button id="zoom-out" class="button" title="缩小 (-)">−</button>
+            <span id="zoom-label" class="zoom" data-testid="zoom-label">100%</span>
+            <button id="zoom-in" class="button" title="放大 (+)">+</button>
+            <button id="zoom-fit" class="button" title="适应窗口 (F)">适应</button>
+            <button id="zoom-reset" class="button" title="1:1 (1)">1:1</button>
+          </div>
+          <div class="group right">
+            <span id="page-meta" class="muted" data-testid="page-meta"></span>
+            <a id="download-page" class="button" href="#" download>下载 SVG</a>
+          </div>
+        </div>
+
+        <div id="stage" class="stage" data-testid="stage">
+          <div id="page-wrap" class="page-wrap" hidden>
+            <div id="page" class="page" data-testid="page">
+              <img id="page-image" alt="" data-testid="page-image" />
+            </div>
+          </div>
+          <div id="empty" class="empty" data-testid="empty">
+            <p>还没有图纸</p>
+            <p class="muted">上传一个 .vsd 文件即可逐页查看</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>
