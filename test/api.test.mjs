@@ -1,10 +1,10 @@
 /**
- * End to end API tests: upload a real .vsd, render it with the libvisio fork and
- * read the pages back.
+ * Integration tests: upload a real .vsd, render it with the libvisio fork and
+ * read the pages back.  Run with `bun test`.
  *
- *   VSD_SAMPLE=/path/to/drawing.vsd node --test test/
+ *   VSD_SAMPLE=/path/to/drawing.vsd VSD_SAMPLE_HAIRLINE=/path/to/hairline.vsd bun test
  *
- * Without VSD_SAMPLE the rendering tests are skipped, so `npm test` still works
+ * Without VSD_SAMPLE the rendering tests are skipped, so `bun test` still works
  * on a machine that has no sample drawing.
  */
 import assert from 'node:assert/strict'
@@ -12,7 +12,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { after, before, describe, it } from 'node:test'
+import { afterAll, beforeAll, describe, it } from 'bun:test'
 
 const SAMPLE = process.env.VSD_SAMPLE || ''
 const hasSample = SAMPLE && existsSync(SAMPLE)
@@ -35,7 +35,7 @@ async function api(pathname, options) {
   return { status: response.status, body, response }
 }
 
-before(async () => {
+beforeAll(async () => {
   dataDir = await mkdtemp(path.join(os.tmpdir(), 'vsd-viewer-test-'))
   process.env.VSD_VIEWER_DATA = dataDir
   process.env.VSD_VIEWER_NO_LISTEN = '1'
@@ -45,7 +45,7 @@ before(async () => {
   baseUrl = `http://127.0.0.1:${port}`
 })
 
-after(async () => {
+afterAll(async () => {
   await new Promise((resolve) => server.close(resolve))
   await rm(dataDir, { recursive: true, force: true })
 })
@@ -86,7 +86,10 @@ describe('library api', () => {
   })
 })
 
-describe('rendering', { skip: hasSample ? false : 'set VSD_SAMPLE to run' }, () => {
+const describeRendering = hasSample ? describe : describe.skip
+const describeHairline = hasHairlineSample ? describe : describe.skip
+
+describeRendering('rendering (set VSD_SAMPLE to run)', () => {
   let fileId
   let detail
 
@@ -177,23 +180,17 @@ describe('rendering', { skip: hasSample ? false : 'set VSD_SAMPLE to run' }, () 
   })
 })
 
-describe(
-  'hairline drawings',
-  { skip: hasHairlineSample ? false : 'set VSD_SAMPLE_HAIRLINE to run' },
-  () => {
-    it('emulates Visio hair lines as non scaling 1px strokes', async () => {
-      const buffer = await readFile(HAIRLINE_SAMPLE)
-      const { status, body } = await api(
-        `/api/files?name=${encodeURIComponent(path.basename(HAIRLINE_SAMPLE))}`,
-        { method: 'POST', body: buffer },
-      )
-      assert.equal(status, 201, JSON.stringify(body).slice(0, 300))
-      const detail = await api(`/api/files/${body.id}`)
-      const markup = await (await fetch(baseUrl + detail.body.pages[0].svg)).text()
-      assert.match(markup, /vector-effect:non-scaling-stroke/)
-      const covered = /vector-effect:non-scaling-stroke/.test(markup)
-      assert.ok(covered)
-      await api(`/api/files/${body.id}`, { method: 'DELETE' })
-    })
-  },
-)
+describeHairline('hairline drawings (set VSD_SAMPLE_HAIRLINE to run)', () => {
+  it('emulates Visio hair lines as non scaling 1px strokes', async () => {
+    const buffer = await readFile(HAIRLINE_SAMPLE)
+    const { status, body } = await api(
+      `/api/files?name=${encodeURIComponent(path.basename(HAIRLINE_SAMPLE))}`,
+      { method: 'POST', body: buffer },
+    )
+    assert.equal(status, 201, JSON.stringify(body).slice(0, 300))
+    const detail = await api(`/api/files/${body.id}`)
+    const markup = await (await fetch(baseUrl + detail.body.pages[0].svg)).text()
+    assert.match(markup, /vector-effect:non-scaling-stroke/)
+    await api(`/api/files/${body.id}`, { method: 'DELETE' })
+  })
+})

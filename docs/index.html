@@ -21,11 +21,11 @@
   </head>
   <body>
     <header class="hero">
-      <p class="eyebrow">Self-hosted · Node.js · libvisio</p>
+      <p class="eyebrow">Self-hosted · Bun · libvisio</p>
       <h1>VSD Online Viewer</h1>
       <p class="badges">
         <img src="https://img.shields.io/badge/license-MIT-3DA639.svg" alt="license MIT" />
-        <img src="https://img.shields.io/badge/node-%E2%89%A5%2020-339933.svg?logo=node.js&logoColor=white" alt="node >= 20" />
+        <img src="https://img.shields.io/badge/bun-%E2%89%A5%201.3-fbf0df.svg?logo=bun&logoColor=black" alt="bun >= 1.3" />
         <img src="https://img.shields.io/badge/format-VSD%20%E2%86%92%20SVG-1f5ac2.svg" alt="format VSD to SVG" />
         <img src="https://img.shields.io/badge/renderer-libvisio%20%2B%20custom%20SVG-6f42c1.svg" alt="renderer libvisio + custom SVG" />
         <img src="https://img.shields.io/badge/server%20deps-none-0aa.svg" alt="server dependencies none" />
@@ -71,19 +71,19 @@
           <li><strong>hairline 正确渲染</strong>：0 线宽按 1 设备像素绘制，不再整片丢失</li>
           <li><strong>文本按 Visio 排版</strong>：段落硬换行、水平/垂直对齐、CJK 自动折行</li>
           <li><strong>真实箭头与图案填充</strong>：使用 Visio 原始箭头路径，斜线填充输出为 SVG <code>&lt;pattern&gt;</code></li>
-          <li><strong>零运行时依赖的服务端</strong>：只用 Node 内置模块；纯前端，无构建步骤</li>
+          <li><strong>零运行时依赖的服务端</strong>：Bun 直接运行，只用标准 API；纯前端，无构建步骤</li>
           <li><strong>图纸库与去重</strong>：相同内容（sha256）自动复用</li>
         </ul>
       </section>
 
       <section>
         <h2>快速开始</h2>
-        <pre><code>git clone https://github.com/amlei/vsd-online-viewer.git
+<pre><code>git clone https://github.com/amlei/vsd-online-viewer.git
 cd vsd-online-viewer
-npm run build:renderer   # 构建渲染器（下载 libvisio 并打补丁）
-npm start                # http://localhost:4310</code></pre>
+bun run build:renderer   # 构建渲染器（下载 libvisio 并打补丁）
+bun start                # http://localhost:4310</code></pre>
         <p class="muted">
-          环境要求：Node ≥ 20；构建渲染器需要 librevenge / boost / icu4c / libxml2 与 C++17 编译器。
+          环境要求：Bun ≥ 1.3；构建渲染器需要 librevenge / boost / icu4c / libxml2 与 C++17 编译器。
         </p>
       </section>
 

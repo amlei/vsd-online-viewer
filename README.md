@@ -1,7 +1,7 @@
 # VSD Online Viewer
 
 [![license](https://img.shields.io/badge/license-MIT-3DA639.svg)](LICENSE)
-[![node](https://img.shields.io/badge/node-%E2%89%A5%2020-339933.svg?logo=node.js&logoColor=white)](#环境要求)
+[![bun](https://img.shields.io/badge/bun-%E2%89%A5%201.3-fbf0df.svg?logo=bun&logoColor=black)](#环境要求)
 [![format](https://img.shields.io/badge/format-VSD%20%E2%86%92%20SVG-1f5ac2.svg)](#关键特性)
 [![renderer](https://img.shields.io/badge/renderer-libvisio%20%2B%20custom%20SVG-6f42c1.svg)](https://github.com/amlei/vsd-online-viewer/blob/main/renderer/README.md)
 [![server deps](https://img.shields.io/badge/server%20deps-none-0aa.svg)](#关键特性)
@@ -15,7 +15,7 @@
 不需要安装 Visio，不需要 Windows，也不依赖任何第三方在线转换服务——图纸只落在你自己的服务器上。
 
 > 关键词：Visio viewer · VSD viewer · `.vsd` 在线预览 · Visio 图纸浏览器 · libvisio ·
-> SVG 渲染 · self-hosted · Node.js · 内网离线部署
+> SVG 渲染 · self-hosted · Bun · Node.js · 内网离线部署
 
 ![VSD Online Viewer 界面](https://raw.githubusercontent.com/amlei/vsd-online-viewer/refs/heads/main/assets/preview-empty.png)
 
@@ -27,7 +27,8 @@
 
 1. **渲染器**（`renderer/`）：libvisio 的补丁版 fork + 自研 SVG 输出层，把 `.vsd` 逐页转成
    自包含 SVG（不引用外部字体或图片）；
-2. **服务**（`server/`）：零运行时依赖的 `node:http` 服务，负责上传、落盘、调用渲染器、提供页面与文字接口；
+2. **服务**（`server/`）：零运行时依赖的 `node:http` 服务（跑在 Bun 上），负责上传、落盘、
+   调用渲染器、提供页面与文字接口；
 3. **界面**（`public/`）：原生 ES module 单页应用，无构建步骤。
 
 ## 不是什么
@@ -47,14 +48,15 @@
 | 真实箭头 | 使用 libvisio 给出的箭头路径/视口/尺寸，而非通用近似形状 |
 | 图案填充 | Visio 的斜线/图案填充输出为 SVG `<pattern>` |
 | 图纸库与去重 | 相同内容（sha256）自动复用，不重复渲染 |
-| 无依赖服务端 | 只用 Node 内置模块；上传走原始请求体，无需 multipart 解析 |
+| 无依赖服务端 | 只用标准 API（Bun / Node 内置模块）；上传走原始请求体，无需 multipart 解析 |
 | 覆盖率体检（可选） | `renderer/tools/census.py` 统计解析器尚未处理的 chunk，量化"未知问题"规模 |
 
 ## 快速开始
 
 ### 环境要求
 
-- Node.js ≥ 20（开发验证于 Node 25）
+- [Bun](https://bun.sh) ≥ 1.3（开发验证于 1.3.13）。服务端只用标准 Web / Node API，
+  Node ≥ 20 同样能跑，但脚本与测试以 Bun 为准。
 - 构建渲染器需要：`librevenge`、`boost`、`icu4c`、`libxml2`、`curl`、`patch`、C++17 编译器
   （macOS：`brew install librevenge boost icu4c libxml2`）
 - 可选：`python3`（仅"覆盖率体检"用，脚本自带 CFB 读取，无需额外 pip 包）
@@ -63,10 +65,10 @@
 
 ```sh
 # 1. 构建渲染器（首次会下载 libvisio 源码并打补丁）
-npm run build:renderer          # 等价于 ./renderer/build.sh
+bun run build:renderer          # 等价于 ./renderer/build.sh
 
 # 2. 启动
-npm start                       # http://localhost:4310
+bun start                       # http://localhost:4310
 ```
 
 ### 环境变量
@@ -162,7 +164,7 @@ Visio 的排版（自动折行、AutoFit）与字体度量是渲染时计算的�
 
 ```sh
 # 集成测试（起真实服务 + 上传真实图纸；不设样本时渲染用例自动跳过）
-VSD_SAMPLE=/path/to/drawing.vsd VSD_SAMPLE_HAIRLINE=/path/to/hairline.vsd npm test
+VSD_SAMPLE=/path/to/drawing.vsd VSD_SAMPLE_HAIRLINE=/path/to/hairline.vsd bun test
 
 # 解析覆盖率（哪些 chunk 尚未被解析器处理）
 python3 renderer/tools/census.py --json 图纸.vsd
@@ -172,7 +174,7 @@ python3 test/vsd-render/regression.py --pages /tmp/out/pages --out /tmp/reg \
     --ref 1=/path/to/page-01-reference.png
 ```
 
-`npm test` 覆盖：图纸库读写、非 `.vsd` 与空文件拒绝、静态页面、逐页渲染、页索引、
+`bun test` 覆盖：图纸库读写、非 `.vsd` 与空文件拒绝、静态页面、逐页渲染、页索引、
 文字坐标与字号，以及两条关键回归断言——**任何页面都不得出现不可见的 `stroke-width:0`**、
 **hairline 图纸必须渲染出 `vector-effect:non-scaling-stroke`**。
 
@@ -212,7 +214,3 @@ data/       运行期数据（每份图纸一个目录：source.vsd + pages/ + m
   补丁见 `renderer/patches/`；仅链接 [librevenge](https://sourceforge.net/p/libwpd/wiki/librevenge/)
   （LGPL-2.1+/MPL-2.0），不修改其源码。
 - libvisio / librevenge 源码不随本仓库分发，由 `renderer/build.sh` 在构建时下载。
-
----
-
-重新生成 README 截图：启动服务后 `playwright-cli open http://localhost:4310 && playwright-cli screenshot --filename=assets/preview-empty.png`。

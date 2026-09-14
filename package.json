@@ -4,14 +4,15 @@
   "private": true,
   "type": "module",
   "description": "Upload, convert and view Microsoft Visio (.vsd) drawings in the browser",
+  "packageManager": "bun@1.3.13",
   "scripts": {
     "build:renderer": "./renderer/build.sh",
-    "start": "node server/server.mjs",
-    "dev": "VSD_VIEWER_DEV=1 node --watch server/server.mjs",
-    "test": "node --test",
-    "census": "node server/cli-census.mjs"
+    "start": "bun run server/server.mjs",
+    "dev": "bun --watch server/server.mjs",
+    "test": "bun test",
+    "census": "python3 renderer/tools/census.py"
   },
   "engines": {
-    "node": ">=20"
+    "bun": ">=1.1"
   }
 }
