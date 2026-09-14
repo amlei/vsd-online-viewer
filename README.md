@@ -17,7 +17,7 @@
 > 关键词：Visio viewer · VSD viewer · `.vsd` 在线预览 · Visio 图纸浏览器 · libvisio ·
 > SVG 渲染 · self-hosted · Node.js · 内网离线部署
 
-![VSD Online Viewer 界面](https://raw.githubusercontent.com/amlei/vsd-online-viewer/main/assets/preview-empty.png)
+![VSD Online Viewer 界面](https://raw.githubusercontent.com/amlei/vsd-online-viewer/refs/heads/main/assets/preview-empty.png)
 
 项目主页：<https://amlei.github.io/vsd-online-viewer/>
 
